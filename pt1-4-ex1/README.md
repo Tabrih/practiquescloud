@@ -55,10 +55,15 @@ Regles del Security Group:
 practiquescloud/
 └── pt1-4-ex1/
     ├── assets/
-    │   └── topologia.png
+    │   ├── topologia.png      export del diagrama
+    │   └── topologia.drawio   font editable (draw.io / diagrams.net)
     ├── README.md
     └── main.tf
 ```
+
+El diagrama es pot obrir i modificar amb [draw.io](https://app.diagrams.net) o l'aplicació
+d'escriptori: `File → Open` i seleccionar `assets/topologia.drawio`. Per regenerar el PNG,
+`File → Export as → PNG` amb escala `1x`.
 
 ## 4. Requisits previs
 

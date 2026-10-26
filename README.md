@@ -15,7 +15,8 @@ inclou el codi Terraform, la documentació i el diagrama de topologia.
 practiquescloud/
 └── pt1-4-ex1/
     ├── assets/
-    │   └── topologia.png
+    │   ├── topologia.png
+    │   └── topologia.drawio
     ├── README.md
     └── main.tf
 ```
