@@ -29,10 +29,11 @@ El diagrama mostra el camí del trànsit des d'Internet fins a les instàncies:
 
 - **Internet → Internet Gateway**: el trànsit HTTP (port 80) i SSH (port 22) entra a la VPC
   per l'Internet Gateway associat a la VPC per defecte.
-- **VPC per defecte (`10.0.0.0/16`)**: s'aprofita la VPC que AWS crea a cada compte perquè
+- **VPC per defecte (`172.31.0.0/16`)**: s'aprofita la VPC que AWS crea a cada compte perquè
   l'exercici se centri en les instàncies. Té subxarxes públiques amb sortida a Internet.
-- **Subnet pública (`10.0.1.0/24`, `us-east-1a`)**: és on s'assignen les instàncies, amb IP
-  pública pròpia perquè siguin accessibles des de fora.
+- **Subnet pública (`172.31.16.0/20`, `us-east-1c`)**: és on s'assignen les instàncies, amb
+  IP pública pròpia perquè siguin accessibles des de fora. L'Availability Zone la tria AWS
+  automàticament en crear la instància dins la subxarxa.
 - **Security Group `pt1-4-ex1-sg`**: filtra el trànsit d'entrada i de sortida.
 - **EC2 `pt1-4-ex1-web-1` i `pt1-4-ex1-web-2`**: les dues instàncies `t3.micro` amb Amazon
   Linux 2023 i un servidor Apache (`httpd`) desplegat amb `user_data`.
@@ -42,7 +43,7 @@ Regles del Security Group:
 | Direcció | Port | Origen / destinació | Motiu |
 |---|---|---|---|
 | Entrada | 80/tcp | `0.0.0.0/0` | Servir la pàgina web a qualsevol client |
-| Entrada | 22/tcp | `var.ssh_cidr` (`2.136.30.53/32` per defecte) | Administració per SSH, només des de la IP indicada |
+| Entrada | 22/tcp | `var.ssh_cidr` (`81.42.248.211/32` per defecte) | Administració per SSH, només des de la IP indicada |
 | Sortida | tots | `0.0.0.0/0` | Actualitzacions de paquets i respostes HTTP |
 
 > El valor de `ssh_cidr` és la IP pública des de la qual s'administra el laboratori. Si
@@ -101,7 +102,7 @@ El fitxer s'organitza en blocs:
 | `instance_type` | `t3.micro` | Tipus d'instància EC2 |
 | `instance_count` | `2` | Nombre d'instàncies |
 | `key_name` | `vockey` | Key pair per accedir per SSH |
-| `ssh_cidr` | `2.136.30.53/32` | Rang autoritzat al port 22 |
+| `ssh_cidr` | `81.42.248.211/32` | Rang autoritzat al port 22 |
 | `project_tag` | `pt1-4-ex1` | Etiqueta comuna dels recursos |
 
 Es poden sobreescriure sense tocar el codi:
@@ -153,12 +154,14 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-ami_id       = "ami-0xxxxxxxxxxxxxxxx"
-instance_ids = ["i-0aaa...", "i-0bbb..."]
-public_ips   = ["54.x.x.x", "3.x.x.x"]
-ssh_commands = ["ssh -i ~/.ssh/vockey.pem ec2-user@54.x.x.x", ...]
-urls         = ["http://54.x.x.x", "http://3.x.x.x"]
+ami_id       = "ami-04b938437b69a2c9c"
+instance_ids = ["i-021a04d45cda3ebca", "i-0caa961a3306ffb54"]
+public_ips   = ["34.227.192.134", "52.72.93.94"]
+ssh_commands = ["ssh -i ~/.ssh/vockey.pem ec2-user@34.227.192.134", ...]
+urls         = ["http://34.227.192.134", "http://52.72.93.94"]
 ```
+
+> Les IPs públiques canvien a cada `apply`, ja que s'assignen de manera dinàmica.
 
 ### 6.5 Verificar el desplegament
 
@@ -166,8 +169,8 @@ Comprovar que les instàncies responen per HTTP (el `user_data` triga un minut a
 
 ```bash
 terraform output -raw urls
-curl http://<IP_PUBLICA>
-# <h1>pt1-4-ex1 - ip-10-0-1-23.ec2.internal</h1>
+curl http://34.227.192.134
+# <h1>pt1-4-ex1 - ip-172-31-18-11.ec2.internal</h1>
 ```
 
 Connectar-s'hi per SSH (cal el fitxer `.pem` del key pair amb permisos `600`):
@@ -180,8 +183,11 @@ ssh -i ~/.ssh/vockey.pem ec2-user@<IP_PUBLICA>
 Un cop dins, comprovar la versió del sistema i el servei web:
 
 ```bash
-cat /etc/os-release | head -2     # Amazon Linux 2023
-sudo systemctl status httpd
+grep -E '^(NAME|VERSION)=' /etc/os-release
+# NAME="Amazon Linux"
+# VERSION="2023"
+sudo systemctl is-active httpd
+# active
 ```
 
 També es pot verificar des de la consola d'AWS (EC2 → Instances) que hi ha dues
@@ -198,14 +204,67 @@ terraform destroy
 Terraform demana confirmació i esborra les instàncies i el Security Group. Els outputs
 deixen de ser vàlids.
 
-## 7. Captures
+## 7. Resultats de l'execució
+
+Desplegament verificat el 26 d'octubre de 2026 amb Terraform 1.17.0 i el proveïdor
+`hashicorp/aws` 6.69.1.
+
+### 7.1 `terraform apply`
+
+```text
+aws_security_group.web: Creation complete after 3s [id=sg-0bc1ed16884c67bd6]
+aws_instance.web[0]: Creation complete after 15s [id=i-021a04d45cda3ebca]
+aws_instance.web[1]: Creation complete after 15s [id=i-0caa961a3306ffb54]
+
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+ami_id       = "ami-04b938437b69a2c9c"
+instance_ids = ["i-021a04d45cda3ebca", "i-0caa961a3306ffb54"]
+public_ips   = ["34.227.192.134", "52.72.93.94"]
+```
+
+### 7.2 Resum dels recursos creats
+
+| Recurs | ID | Zona | IP privada | IP pública | Tipus |
+|---|---|---|---|---|---|
+| `pt1-4-ex1-web-1` | `i-021a04d45cda3ebca` | `us-east-1c` | `172.31.18.11` | `34.227.192.134` | `t3.micro` |
+| `pt1-4-ex1-web-2` | `i-0caa961a3306ffb54` | `us-east-1c` | `172.31.25.118` | `52.72.93.94` | `t3.micro` |
+| `pt1-4-ex1-sg` | `sg-0bc1ed16884c67bd6` | — | — | — | Security Group |
+
+Les dues instàncies comparteixen la subxarxa `subnet-07dc94a79b98dbf19` de la VPC per
+defecte i l'AMI `ami-04b938437b69a2c9c` (Amazon Linux 2023).
+
+### 7.3 Comprovació HTTP
+
+El `user_data` instal·la i arrenca Apache; al cap d'un minut les dues IPs responen:
+
+```text
+$ curl http://34.227.192.134
+<h1>pt1-4-ex1 - ip-172-31-18-11.ec2.internal</h1>
+
+$ curl http://52.72.93.94
+<h1>pt1-4-ex1 - ip-172-31-25-118.ec2.internal</h1>
+```
+
+### 7.4 Comprovació SSH
+
+```text
+$ ssh -i ~/.ssh/vockey.pem ec2-user@34.227.192.134
+NAME="Amazon Linux"
+VERSION="2023"
+httpd: active
+```
+
+### 7.5 Captures
 
 | Recurs | Captura |
 |---|---|
-| Topologia | [`assets/topologia.png`](assets/topologia.png) |
-| Consola EC2 amb les 2 instàncies | *(afegir captura)* |
-| `terraform apply` completat | *(afegir captura)* |
-| Pàgina web servida per les instàncies | *(afegir captura)* |
+| Topologia de xarxa | [`assets/topologia.png`](assets/topologia.png) |
+| Font editable del diagrama | [`assets/topologia.drawio`](assets/topologia.drawio) |
+| Consola EC2 amb les 2 instàncies | *(pendent: captura de pantalla de la consola)* |
+| Pàgina web servida per les instàncies | *(pendent: captura del navegador)* |
 
 ## 8. Problemes habituals
 

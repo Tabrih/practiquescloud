@@ -53,7 +53,7 @@ variable "key_name" {
 variable "ssh_cidr" {
   description = "Rang CIDR autoritzat a connectar-se per SSH (port 22). Canvia'l per la teva IP pública /32"
   type        = string
-  default     = "2.136.30.53/32"
+  default     = "81.42.248.211/32"
 }
 
 variable "project_tag" {
