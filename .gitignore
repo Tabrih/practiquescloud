@@ -1,0 +1,19 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+tfplan
+tfplan.*
+crash.log
+crash.*.log
+
+# Credencials i claus
+*.pem
+*.tfvars
+!example.tfvars
+.aws/
+
+# Sistema
+.DS_Store
+Thumbs.db
