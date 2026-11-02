@@ -56,15 +56,13 @@ Regles del Security Group:
 practiquescloud/
 └── pt1-4-ex1/
     ├── assets/
-    │   ├── topologia.png      export del diagrama
-    │   └── topologia.drawio   font editable (draw.io / diagrams.net)
+    │   └── topologia.png      export del diagrama
     ├── README.md
     └── main.tf
 ```
 
-El diagrama es pot obrir i modificar amb [draw.io](https://app.diagrams.net) o l'aplicació
-d'escriptori: `File → Open` i seleccionar `assets/topologia.drawio`. Per regenerar el PNG,
-`File → Export as → PNG` amb escala `1x`.
+El diagrama de la topologia es distribueix en format PNG a
+[`assets/topologia.png`](assets/topologia.png).
 
 ## 4. Requisits previs
 
@@ -262,7 +260,6 @@ httpd: active
 | Recurs | Captura |
 |---|---|
 | Topologia de xarxa | [`assets/topologia.png`](assets/topologia.png) |
-| Font editable del diagrama | [`assets/topologia.drawio`](assets/topologia.drawio) |
 | Consola EC2 amb les 2 instàncies | *(pendent: captura de pantalla de la consola)* |
 | Pàgina web servida per les instàncies | *(pendent: captura del navegador)* |
 

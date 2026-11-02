@@ -16,8 +16,7 @@ inclou la documentació, els diagrames de topologia i, quan escau, el codi Terra
 practiquescloud/
 ├── pt1-4-ex1/
 │   ├── assets/
-│   │   ├── topologia.png
-│   │   └── topologia.drawio
+│   │   └── topologia.png
 │   ├── README.md
 │   └── main.tf
 └── pt1-4-ex2/
@@ -25,8 +24,7 @@ practiquescloud/
     │   ├── VPC.png
     │   ├── subredesvpc.png
     │   ├── Instancias.png
-    │   ├── topologia.png
-    │   └── topologia.drawio
+    │   └── topologia.png
     ├── README.md
     └── main.tf
 ```

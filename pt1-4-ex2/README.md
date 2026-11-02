@@ -4,7 +4,7 @@ Aquesta pràctica té tres parts. A la **Part A** es dissenya una xarxa personal
 (VPC) amb tres subxarxes dins d'una mateixa zona de disponibilitat. A la **Part B** es
 desplega tota la infraestructura **manualment des de la consola d'AWS** (GUI). A la
 **Part C** es reprodueix la mateixa infraestructura amb **Terraform** (IaC) i se'n
-documenta la topologia amb un diagrama de draw.io.
+documenta la topologia amb un diagrama.
 
 | Paràmetre | Valor |
 |---|---|
@@ -227,15 +227,10 @@ La configuració s'ha validat amb **Terraform 1.17.1** i el proveïdor
 
 ### C.6 Diagrama de topologia
 
-El diagrama s'ha dissenyat amb **draw.io**. El fitxer editable és
-[`assets/topologia.drawio`](assets/topologia.drawio) i l'exportació en PNG és
+El diagrama de la topologia es distribueix en format PNG a
 [`assets/topologia.png`](assets/topologia.png).
 
 ![Topologia de la VPC, les subxarxes i les 6 instàncies](assets/topologia.png)
-
-Per modificar-lo, obre el `.drawio` amb [draw.io](https://app.diagrams.net) o
-l'aplicació d'escriptori (`File → Open`). Per regenerar el PNG, fes
-`File → Export as → PNG`.
 
 ---
 
@@ -246,8 +241,7 @@ l'aplicació d'escriptori (`File → Open`). Per regenerar el PNG, fes
 | VPC creada | [`assets/VPC.png`](assets/VPC.png) |
 | Subxarxes dins la VPC | [`assets/subredesvpc.png`](assets/subredesvpc.png) |
 | 6 instàncies EC2 en execució | [`assets/Instancias.png`](assets/Instancias.png) |
-| Topologia (font editable) | [`assets/topologia.drawio`](assets/topologia.drawio) |
-| Topologia exportada | [`assets/topologia.png`](assets/topologia.png) |
+| Topologia | [`assets/topologia.png`](assets/topologia.png) |
 
 ---
 
