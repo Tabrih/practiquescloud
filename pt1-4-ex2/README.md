@@ -1,9 +1,10 @@
-# Exercici 2 — Disseny de xarxa i desplegament per consola
+# Exercici 2 — Disseny de xarxa, consola i Terraform
 
-Aquesta pràctica té dues parts. A la **Part A** es dissenya una xarxa personalitzada
+Aquesta pràctica té tres parts. A la **Part A** es dissenya una xarxa personalitzada
 (VPC) amb tres subxarxes dins d'una mateixa zona de disponibilitat. A la **Part B** es
-desplega tota la infraestructura **manualment des de la consola d'AWS** (GUI), sense
-Terraform.
+desplega tota la infraestructura **manualment des de la consola d'AWS** (GUI). A la
+**Part C** es reprodueix la mateixa infraestructura amb **Terraform** (IaC) i se'n
+documenta la topologia amb un diagrama de draw.io.
 
 | Paràmetre | Valor |
 |---|---|
@@ -133,13 +134,116 @@ llistat d'instàncies perquè quedin com `Subnet A Ins1`/`Subnet A Ins2`,
 
 ---
 
+## Part C — Desplegament amb Terraform (IaC)
+
+La Part C automatitza exactament la mateixa infraestructura de les parts anteriors: la
+VPC `proyecto-vpc`, les tres subxarxes i les sis instàncies EC2, amb el mateix nom i la
+mateixa distribució.
+
+### C.1 Estructura dels fitxers
+
+| Fitxer | Contingut |
+|---|---|
+| `versions.tf` | Versió mínima de Terraform i del proveïdor d'AWS |
+| `variables.tf` | Variables configurables: regió, CIDRs, tipus d'instància, key pair… |
+| `main.tf` | VPC, subxarxes, AMI d'Amazon Linux 2023 i les 6 instàncies EC2 |
+| `outputs.tf` | IDs i dades de la VPC, les subxarxes i les instàncies |
+
+### C.2 Recursos que crea
+
+| Recurs | Nom | Detall |
+|---|---|---|
+| VPC | `proyecto-vpc` | `10.0.0.0/16` |
+| Subxarxa | `Subnet A` | `10.0.32.0/25` · `us-east-1a` |
+| Subxarxa | `Subnet B` | `10.0.30.0/23` · `us-east-1a` |
+| Subxarxa | `Subnet C` | `10.0.33.0/28` · `us-east-1a` |
+| Instàncies | `Subnet A Ins1`, `Subnet A Ins2` | 2 × `t3.micro` · Amazon Linux 2023 |
+| Instàncies | `Subnet B Ins1`, `Subnet B Ins2` | 2 × `t3.micro` · Amazon Linux 2023 |
+| Instàncies | `Subnet C Ins1`, `Subnet C Ins2` | 2 × `t3.micro` · Amazon Linux 2023 |
+
+Les instàncies utilitzen el **grup de seguretat per defecte** de la VPC, d'acord amb
+l'abast d'aquesta part de la pràctica.
+
+### C.3 Variables
+
+| Variable | Valor per defecte | Descripció |
+|---|---|---|
+| `aws_region` | `us-east-1` | Regió on es despleguen els recursos |
+| `project_tag` | `pt1-4-ex2` | Etiqueta comuna dels recursos |
+| `vpc_name` | `proyecto-vpc` | Nom de la VPC |
+| `vpc_cidr` | `10.0.0.0/16` | Rang CIDR de la VPC |
+| `availability_zone` | `us-east-1a` | Zona de disponibilitat de les tres subxarxes |
+| `instance_type` | `t3.micro` | Tipus d'instància EC2 |
+| `instances_per_subnet` | `2` | Instàncies creades a cada subxarxa |
+| `key_name` | `vockey` | Key pair per accedir per SSH |
+| `subnets` | vegeu `variables.tf` | Nom i CIDR de cada subxarxa |
+
+Es poden sobreescriure sense tocar el codi, per exemple:
+
+```bash
+terraform apply -var="instance_type=t3.small"
+```
+
+### C.4 Procediment d'execució
+
+```bash
+cd pt1-4-ex2
+terraform init        # descarrega el proveïdor d'AWS
+terraform fmt         # aplica el format oficial
+terraform validate    # comprova la sintaxi i la coherència
+terraform plan        # mostra què es crearà sense crear res
+terraform apply       # crea la VPC, les 3 subxarxes i les 6 instàncies
+```
+
+Per eliminar tota la infraestructura creada per Terraform:
+
+```bash
+terraform destroy
+```
+
+Cal tenir les credencials d'AWS actives al perfil `default` i el key pair `vockey`
+disponible a `us-east-1`.
+
+### C.5 Resultats
+
+En acabar l'`apply`, els outputs mostren el resum de la infraestructura:
+
+```text
+instance_count = 6
+vpc_id         = "vpc-..."
+vpc_cidr       = "10.0.0.0/16"
+subnets        = { "Subnet A" = {...}, "Subnet B" = {...}, "Subnet C" = {...} }
+instances      = { "Subnet A Ins1" = {...}, ..., "Subnet C Ins2" = {...} }
+ami_id         = "ami-..."
+```
+
+La configuració s'ha validat amb **Terraform 1.17.1** i el proveïdor
+`hashicorp/aws ~> 6.0` (`terraform validate` respon
+`Success! The configuration is valid.`).
+
+### C.6 Diagrama de topologia
+
+El diagrama s'ha dissenyat amb **draw.io**. El fitxer editable és
+[`assets/topologia.drawio`](assets/topologia.drawio) i l'exportació en PNG és
+[`assets/topologia.png`](assets/topologia.png).
+
+![Topologia de la VPC, les subxarxes i les 6 instàncies](assets/topologia.png)
+
+Per modificar-lo, obre el `.drawio` amb [draw.io](https://app.diagrams.net) o
+l'aplicació d'escriptori (`File → Open`). Per regenerar el PNG, fes
+`File → Export as → PNG`.
+
+---
+
 ## Evidències de la pràctica
 
-| Evidència | Captura |
+| Evidència | Fitxer |
 |---|---|
 | VPC creada | [`assets/VPC.png`](assets/VPC.png) |
 | Subxarxes dins la VPC | [`assets/subredesvpc.png`](assets/subredesvpc.png) |
 | 6 instàncies EC2 en execució | [`assets/Instancias.png`](assets/Instancias.png) |
+| Topologia (font editable) | [`assets/topologia.drawio`](assets/topologia.drawio) |
+| Topologia exportada | [`assets/topologia.png`](assets/topologia.png) |
 
 ---
 
@@ -154,6 +258,10 @@ Per no consumir crèdit del laboratori, un cop acabada la pràctica:
 > L'ordre importa: no es pot eliminar una VPC mentre tingui subxarxes o altres recursos
 > associats.
 
+Si has desplegat la **Part C** amb Terraform, no cal fer res d'això a mà: executa
+`terraform destroy` dins `pt1-4-ex2` i s'eliminen la VPC, les subxarxes i les instàncies
+alhora.
+
 ---
 
 ## Problemes habituals
@@ -164,6 +272,8 @@ Per no consumir crèdit del laboratori, un cop acabada la pràctica:
 | No apareix `us-east-1a` al desplegable | La VPC pot estar en una altra regió: comprova que ets a `us-east-1`. |
 | `InvalidKeyPair.NotFound` en llançar la instància | El key pair `vockey` no existeix a la regió; crea'n un o selecciona'n un altre. |
 | No puc eliminar la VPC | Encara té subxarxes o altres recursos associats; elimina'ls primer. |
+| `terraform apply` falla amb `ExpiredToken` | La sessió d'AWS Academy ha caducat: torna a iniciar el laboratori i actualitza les credencials. |
+| Terraform diu que la subxarxa ja existeix | Hi ha recursos de la Part B creats a mà amb el mateix CIDR; destrueix-los o canvia el rang abans d'aplicar. |
 
 ---
 
