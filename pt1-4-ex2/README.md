@@ -32,9 +32,9 @@ Totes tres es creen a la **mateixa zona de disponibilitat, `us-east-1a`**:
 
 | Subxarxa | Nom | CIDR | Rang d'adreces | Adreces útils | Instàncies |
 |---|---|---|---|---|---|
-| A | `pt1-4-ex2-subnet-a` | `10.0.32.0/25` | `10.0.32.0` – `10.0.32.127` | 123 | 2 |
-| B | `pt1-4-ex2-subnet-b` | `10.0.30.0/23` | `10.0.30.0` – `10.0.31.255` | 507 | 2 |
-| C | `pt1-4-ex2-subnet-c` | `10.0.33.0/28` | `10.0.33.0` – `10.0.33.15` | 11 | 2 |
+| A | `Subnet A` | `10.0.32.0/25` | `10.0.32.0` – `10.0.32.127` | 123 | 2 |
+| B | `Subnet B` | `10.0.30.0/23` | `10.0.30.0` – `10.0.31.255` | 507 | 2 |
+| C | `Subnet C` | `10.0.33.0/28` | `10.0.33.0` – `10.0.33.15` | 11 | 2 |
 
 > AWS reserva 5 adreces a cada subxarxa (la de xarxa, la del router, dues de DNS i la de
 > broadcast). Per això una `/28` (16 adreces) deixa 11 adreces útils, més que suficients
@@ -82,9 +82,9 @@ Per a cada subxarxa: **VPC → Subnets → Create subnet**.
 
 | Nom | VPC | Zona de disponibilitat | IPv4 CIDR |
 |---|---|---|---|
-| `pt1-4-ex2-subnet-a` | `pt1-4-ex2-vpc` | `us-east-1a` | `10.0.32.0/25` |
-| `pt1-4-ex2-subnet-b` | `pt1-4-ex2-vpc` | `us-east-1a` | `10.0.30.0/23` |
-| `pt1-4-ex2-subnet-c` | `pt1-4-ex2-vpc` | `us-east-1a` | `10.0.33.0/28` |
+| `Subnet A` | `pt1-4-ex2-vpc` | `us-east-1a` | `10.0.32.0/25` |
+| `Subnet B` | `pt1-4-ex2-vpc` | `us-east-1a` | `10.0.30.0/23` |
+| `Subnet C` | `pt1-4-ex2-vpc` | `us-east-1a` | `10.0.33.0/28` |
 
 1. Tria la VPC `pt1-4-ex2-vpc`.
 2. Subnet name: el nom de la taula.
@@ -99,26 +99,27 @@ Per a cada subxarxa: **VPC → Subnets → Create subnet**.
 Per a cada subxarxa es llancen **2 instàncies**, fins a un total de 6:
 
 1. Ves a **EC2 → Instances → Launch instances**.
-2. **Name**: `pt1-4-ex2-web-a1` (i després `-a2`, `-b1`, `-b2`, `-c1`, `-c2`).
+2. **Name**: `Subnet A Ins1` (i després `Subnet A Ins2`, `Subnet B Ins1`, `Subnet B Ins2`, `Subnet C Ins1` i `Subnet C Ins2`).
 3. **AMI**: Amazon Linux 2023 (x86_64).
 4. **Instance type**: `t3.micro`.
 5. **Key pair**: `vockey`.
 6. **Network settings → Edit**:
    - VPC: `pt1-4-ex2-vpc`.
-   - Subnet: la subxarxa corresponent (`pt1-4-ex2-subnet-a`, `-b` o `-c`).
+   - Subnet: la subxarxa corresponent (`Subnet A`, `Subnet B` o `Subnet C`).
    - Security group: deixa el grup per defecte de la VPC.
 7. **Number of instances**: `2` (per crear les dues de la subxarxa alhora).
 8. Prem **Launch instance**.
 
 Repeteix el procés per a les subxarxes B i C. Si fas servir **Number of instances = 2**,
 les dues instàncies comparteixen el mateix Name tag: canvia'ls el nom després des del
-llistat d'instàncies perquè quedin com `-a1`/`-a2`, `-b1`/`-b2` i `-c1`/`-c2`.
+llistat d'instàncies perquè quedin com `Subnet A Ins1`/`Subnet A Ins2`,
+`Subnet B Ins1`/`Subnet B Ins2` i `Subnet C Ins1`/`Subnet C Ins2`.
 
 | Subxarxa | Instàncies | Tipus | SO |
 |---|---|---|---|
-| `pt1-4-ex2-subnet-a` | `pt1-4-ex2-web-a1`, `pt1-4-ex2-web-a2` | `t3.micro` | Amazon Linux 2023 |
-| `pt1-4-ex2-subnet-b` | `pt1-4-ex2-web-b1`, `pt1-4-ex2-web-b2` | `t3.micro` | Amazon Linux 2023 |
-| `pt1-4-ex2-subnet-c` | `pt1-4-ex2-web-c1`, `pt1-4-ex2-web-c2` | `t3.micro` | Amazon Linux 2023 |
+| `Subnet A` | `Subnet A Ins1`, `Subnet A Ins2` | `t3.micro` | Amazon Linux 2023 |
+| `Subnet B` | `Subnet B Ins1`, `Subnet B Ins2` | `t3.micro` | Amazon Linux 2023 |
+| `Subnet C` | `Subnet C Ins1`, `Subnet C Ins2` | `t3.micro` | Amazon Linux 2023 |
 
 ### B.4 Verificar el desplegament
 
