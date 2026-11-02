@@ -21,7 +21,7 @@ Terraform.
 
 | Recurs | Nom | CIDR |
 |---|---|---|
-| VPC | `pt1-4-ex2-vpc` | `10.0.0.0/16` |
+| VPC | `proyecto-vpc` | `10.0.0.0/16` |
 
 La VPC `/16` proporciona 65.536 adreces (`10.0.0.0` – `10.0.255.255`), espai de sobres
 per encabir-hi les tres subxarxes sense solapaments.
@@ -70,7 +70,7 @@ Les tres subxarxes no se solapen entre elles ni surten del rang de la VPC.
 
 1. A la consola, ves a **VPC → Your VPCs → Create VPC**.
 2. Selecciona **VPC only** (no «VPC and more»), per crear les subxarxes manualment.
-3. Name tag: `pt1-4-ex2-vpc`.
+3. Name tag: `proyecto-vpc`.
 4. IPv4 CIDR block: `10.0.0.0/16`.
 5. Deixa la resta de valors per defecte i prem **Create VPC**.
 
@@ -82,11 +82,11 @@ Per a cada subxarxa: **VPC → Subnets → Create subnet**.
 
 | Nom | VPC | Zona de disponibilitat | IPv4 CIDR |
 |---|---|---|---|
-| `Subnet A` | `pt1-4-ex2-vpc` | `us-east-1a` | `10.0.32.0/25` |
-| `Subnet B` | `pt1-4-ex2-vpc` | `us-east-1a` | `10.0.30.0/23` |
-| `Subnet C` | `pt1-4-ex2-vpc` | `us-east-1a` | `10.0.33.0/28` |
+| `Subnet A` | `proyecto-vpc` | `us-east-1a` | `10.0.32.0/25` |
+| `Subnet B` | `proyecto-vpc` | `us-east-1a` | `10.0.30.0/23` |
+| `Subnet C` | `proyecto-vpc` | `us-east-1a` | `10.0.33.0/28` |
 
-1. Tria la VPC `pt1-4-ex2-vpc`.
+1. Tria la VPC `proyecto-vpc`.
 2. Subnet name: el nom de la taula.
 3. Availability Zone: **`us-east-1a`** (la mateixa per a les tres).
 4. IPv4 CIDR block: el CIDR corresponent.
@@ -104,7 +104,7 @@ Per a cada subxarxa es llancen **2 instàncies**, fins a un total de 6:
 4. **Instance type**: `t3.micro`.
 5. **Key pair**: `vockey`.
 6. **Network settings → Edit**:
-   - VPC: `pt1-4-ex2-vpc`.
+   - VPC: `proyecto-vpc`.
    - Subnet: la subxarxa corresponent (`Subnet A`, `Subnet B` o `Subnet C`).
    - Security group: deixa el grup per defecte de la VPC.
 7. **Number of instances**: `2` (per crear les dues de la subxarxa alhora).
@@ -149,7 +149,7 @@ Per no consumir crèdit del laboratori, un cop acabada la pràctica:
 
 1. **EC2 → Instances**: selecciona les 6 instàncies → **Instance state → Terminate**.
 2. **VPC → Subnets**: elimina les tres subxarxes.
-3. **VPC → Your VPCs**: elimina `pt1-4-ex2-vpc`.
+3. **VPC → Your VPCs**: elimina `proyecto-vpc`.
 
 > L'ordre importa: no es pot eliminar una VPC mentre tingui subxarxes o altres recursos
 > associats.
