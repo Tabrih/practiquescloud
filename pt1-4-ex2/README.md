@@ -64,7 +64,7 @@ Les tres subxarxes no se solapen entre elles ni surten del rang de la VPC.
 1. Sessió d'**AWS Academy Learner Lab** iniciada (les credencials són temporals).
 2. Regió de treball: **N. Virginia (`us-east-1`)**.
 3. **Key pair `vockey`** disponible a la regió (el crea AWS Academy per defecte).
-4. Permisos per crear VPC, subxarxes, grups de seguretat i instàncies EC2.
+4. Permisos per crear VPC, subxarxes i instàncies EC2.
 
 ### B.1 Crear la VPC
 
@@ -94,31 +94,7 @@ Per a cada subxarxa: **VPC → Subnets → Create subnet**.
 
 ![Subxarxes creades dins la VPC](assets/subredesvpc.png)
 
-### B.3 (Opcional) Internet Gateway i taula d'encaminament
-
-Aquest pas només cal si vols que les instàncies tinguin accés a Internet (per exemple,
-per connectar-t'hi per SSH o instal·lar paquets). No és imprescindible per fer les
-captures de la pràctica.
-
-1. **VPC → Internet gateways → Create internet gateway** amb el nom
-   `pt1-4-ex2-igw`.
-2. Selecciona'l i fes **Actions → Attach to VPC** → `pt1-4-ex2-vpc`.
-3. **VPC → Route tables → Create route table** amb el nom `pt1-4-ex2-rt` i la VPC
-   `pt1-4-ex2-vpc`.
-4. A la pestanya **Routes**, afegeix la ruta `0.0.0.0/0` cap a l'Internet Gateway.
-5. A **Subnet associations**, associa-hi les tres subxarxes.
-
-### B.4 Crear el grup de seguretat
-
-1. Ves a **VPC → Security groups → Create security group**.
-2. Name: `pt1-4-ex2-sg`; VPC: `pt1-4-ex2-vpc`.
-3. Regles d'entrada:
-   - **SSH (22/tcp)** des de **My IP** (o el teu rang `/32`).
-   - **HTTP (80/tcp)** des de `0.0.0.0/0` (opcional, si vols servir una pàgina web).
-4. Regla de sortida: tot el trànsit cap a `0.0.0.0/0`.
-5. Prem **Create security group**.
-
-### B.5 Llançar les 6 instàncies EC2
+### B.3 Llançar les 6 instàncies EC2
 
 Per a cada subxarxa es llancen **2 instàncies**, fins a un total de 6:
 
@@ -130,8 +106,7 @@ Per a cada subxarxa es llancen **2 instàncies**, fins a un total de 6:
 6. **Network settings → Edit**:
    - VPC: `pt1-4-ex2-vpc`.
    - Subnet: la subxarxa corresponent (`pt1-4-ex2-subnet-a`, `-b` o `-c`).
-   - Auto-assign public IP: **Enable** (si has fet el pas B.3).
-   - Security group: `pt1-4-ex2-sg`.
+   - Security group: deixa el grup per defecte de la VPC.
 7. **Number of instances**: `2` (per crear les dues de la subxarxa alhora).
 8. Prem **Launch instance**.
 
@@ -145,7 +120,7 @@ llistat d'instàncies perquè quedin com `-a1`/`-a2`, `-b1`/`-b2` i `-c1`/`-c2`.
 | `pt1-4-ex2-subnet-b` | `pt1-4-ex2-web-b1`, `pt1-4-ex2-web-b2` | `t3.micro` | Amazon Linux 2023 |
 | `pt1-4-ex2-subnet-c` | `pt1-4-ex2-web-c1`, `pt1-4-ex2-web-c2` | `t3.micro` | Amazon Linux 2023 |
 
-### B.6 Verificar el desplegament
+### B.4 Verificar el desplegament
 
 1. Ves a **EC2 → Instances**.
 2. Filtra per **Instance state = Running**.
@@ -172,14 +147,11 @@ llistat d'instàncies perquè quedin com `-a1`/`-a2`, `-b1`/`-b2` i `-c1`/`-c2`.
 Per no consumir crèdit del laboratori, un cop acabada la pràctica:
 
 1. **EC2 → Instances**: selecciona les 6 instàncies → **Instance state → Terminate**.
-2. **VPC → Security groups**: elimina `pt1-4-ex2-sg`.
-3. **VPC → Route tables**: desassocia i elimina `pt1-4-ex2-rt` (si l'has creat).
-4. **VPC → Internet gateways**: desassocia i elimina `pt1-4-ex2-igw` (si l'has creat).
-5. **VPC → Subnets**: elimina les tres subxarxes.
-6. **VPC → Your VPCs**: elimina `pt1-4-ex2-vpc`.
+2. **VPC → Subnets**: elimina les tres subxarxes.
+3. **VPC → Your VPCs**: elimina `pt1-4-ex2-vpc`.
 
-> L'ordre importa: no es pot eliminar una VPC mentre tingui subxarxes, grups de seguretat
-> o gateways associats.
+> L'ordre importa: no es pot eliminar una VPC mentre tingui subxarxes o altres recursos
+> associats.
 
 ---
 
@@ -190,8 +162,7 @@ Per no consumir crèdit del laboratori, un cop acabada la pràctica:
 | El CIDR de la subxarxa és rebutjat | El rang ha de cabre dins `10.0.0.0/16` i no pot solapar-se amb una altra subxarxa. |
 | No apareix `us-east-1a` al desplegable | La VPC pot estar en una altra regió: comprova que ets a `us-east-1`. |
 | `InvalidKeyPair.NotFound` en llançar la instància | El key pair `vockey` no existeix a la regió; crea'n un o selecciona'n un altre. |
-| Les instàncies no tenen IP pública | Cal un Internet Gateway, una ruta `0.0.0.0/0` i `Auto-assign public IP` activat. |
-| No puc eliminar la VPC | Encara té subxarxes, SGs, rutes o gateways associats; elimina'ls primer. |
+| No puc eliminar la VPC | Encara té subxarxes o altres recursos associats; elimina'ls primer. |
 
 ---
 
