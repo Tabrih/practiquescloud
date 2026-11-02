@@ -28,10 +28,7 @@ practiquescloud/
     │   ├── topologia.png
     │   └── topologia.drawio
     ├── README.md
-    ├── main.tf
-    ├── variables.tf
-    ├── outputs.tf
-    └── versions.tf
+    └── main.tf
 ```
 
 ## Requisits

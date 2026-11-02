@@ -140,14 +140,18 @@ La Part C automatitza exactament la mateixa infraestructura de les parts anterio
 VPC `proyecto-vpc`, les tres subxarxes i les sis instàncies EC2, amb el mateix nom i la
 mateixa distribució.
 
-### C.1 Estructura dels fitxers
+### C.1 Estructura del codi
 
-| Fitxer | Contingut |
+Tot el codi Terraform és a `main.tf`, organitzat en blocs:
+
+| Bloc | Contingut |
 |---|---|
-| `versions.tf` | Versió mínima de Terraform i del proveïdor d'AWS |
-| `variables.tf` | Variables configurables: regió, CIDRs, tipus d'instància, key pair… |
-| `main.tf` | VPC, subxarxes, AMI d'Amazon Linux 2023 i les 6 instàncies EC2 |
-| `outputs.tf` | IDs i dades de la VPC, les subxarxes i les instàncies |
+| `terraform` | Versió mínima de Terraform i del proveïdor d'AWS |
+| `provider` | Regió on es despleguen els recursos |
+| `variable` | Paràmetres configurables: regió, CIDRs, tipus d'instància, key pair… |
+| `data "aws_ami"` | AMI més recent d'Amazon Linux 2023 |
+| `aws_vpc`, `aws_subnet`, `aws_instance` | VPC, tres subxarxes i les 6 instàncies EC2 |
+| `output` | IDs i dades de la VPC, les subxarxes i les instàncies |
 
 ### C.2 Recursos que crea
 
@@ -176,7 +180,7 @@ l'abast d'aquesta part de la pràctica.
 | `instance_type` | `t3.micro` | Tipus d'instància EC2 |
 | `instances_per_subnet` | `2` | Instàncies creades a cada subxarxa |
 | `key_name` | `vockey` | Key pair per accedir per SSH |
-| `subnets` | vegeu `variables.tf` | Nom i CIDR de cada subxarxa |
+| `subnets` | vegeu `main.tf` | Nom i CIDR de cada subxarxa |
 
 Es poden sobreescriure sense tocar el codi, per exemple:
 
