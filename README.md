@@ -1,24 +1,37 @@
 # practiquescloud
 
 Repositori de pràctiques de cloud computing. Cada exercici viu en una carpeta pròpia i
-inclou el codi Terraform, la documentació i el diagrama de topologia.
+inclou la documentació, els diagrames de topologia i, quan escau, el codi Terraform.
 
 ## Exercicis
 
 | Pràctica | Tema | Enllaç |
 |---|---|---|
 | pt1-4-ex1 | Primeres instàncies EC2 amb Terraform (2 × `t3.micro`, Amazon Linux 2023) | [`pt1-4-ex1/`](pt1-4-ex1/README.md) |
+| pt1-4-ex2 | VPC `10.0.0.0/16` amb 3 subxarxes i 6 × `t3.micro`: disseny, desplegament per consola i amb Terraform | [`pt1-4-ex2/`](pt1-4-ex2/README.md) |
 
 ## Estructura
 
 ```
 practiquescloud/
-└── pt1-4-ex1/
+├── pt1-4-ex1/
+│   ├── assets/
+│   │   ├── topologia.png
+│   │   └── topologia.drawio
+│   ├── README.md
+│   └── main.tf
+└── pt1-4-ex2/
     ├── assets/
+    │   ├── VPC.png
+    │   ├── subredesvpc.png
+    │   ├── Instancias.png
     │   ├── topologia.png
     │   └── topologia.drawio
     ├── README.md
-    └── main.tf
+    ├── main.tf
+    ├── variables.tf
+    ├── outputs.tf
+    └── versions.tf
 ```
 
 ## Requisits
@@ -29,7 +42,7 @@ practiquescloud/
 Cada exercici s'executa de manera independent:
 
 ```bash
-cd pt1-4-ex1
+cd pt1-4-ex1   # o pt1-4-ex2
 terraform init
 terraform plan
 terraform apply
