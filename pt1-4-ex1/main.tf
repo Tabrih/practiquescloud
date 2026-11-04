@@ -3,8 +3,7 @@
 # Exercici 1: primeres instàncies EC2 amb Terraform
 #
 # Crea 2 instàncies EC2 t3.micro amb Amazon Linux 2023 a la regió us-east-1,
-# dins de la VPC per defecte del compte, amb un Security Group que permet
-# HTTP des de qualsevol lloc i SSH només des de la IP indicada a ssh_cidr.
+# dins de la VPC per defecte del compte.
 ###############################################################################
 
 terraform {
@@ -48,12 +47,6 @@ variable "key_name" {
   description = "Key pair per accedir per SSH. A AWS Academy Learner Lab el key pair predefinit és 'vockey'"
   type        = string
   default     = "vockey"
-}
-
-variable "ssh_cidr" {
-  description = "Rang CIDR autoritzat a connectar-se per SSH (port 22). Canvia'l per la teva IP pública /32"
-  type        = string
-  default     = "81.42.248.211/32"
 }
 
 variable "project_tag" {
@@ -106,45 +99,6 @@ data "aws_vpc" "default" {
 }
 
 ###############################################################################
-# Security Group
-###############################################################################
-
-resource "aws_security_group" "web" {
-  name        = "${var.project_tag}-sg"
-  description = "HTTP public i SSH restringit per a ${var.project_tag}"
-  vpc_id      = data.aws_vpc.default.id
-
-  ingress {
-    description = "HTTP des de qualsevol lloc"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "SSH des de la meva IP"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.ssh_cidr]
-  }
-
-  egress {
-    description = "Sortida a Internet"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name    = "${var.project_tag}-sg"
-    Project = var.project_tag
-  }
-}
-
-###############################################################################
 # Instàncies EC2
 ###############################################################################
 
@@ -154,16 +108,7 @@ resource "aws_instance" "web" {
   ami                         = data.aws_ami.al2023.id
   instance_type               = var.instance_type
   key_name                    = var.key_name
-  vpc_security_group_ids      = [aws_security_group.web.id]
   associate_public_ip_address = true
-
-  # Servidor web mínim per comprovar que la instància respon per HTTP.
-  user_data = <<-EOF
-    #!/bin/bash
-    dnf install -y httpd
-    echo "<h1>${var.project_tag} - $(hostname -f)</h1>" > /var/www/html/index.html
-    systemctl enable --now httpd
-  EOF
 
   tags = {
     Name    = "${var.project_tag}-web-${count.index + 1}"
@@ -183,19 +128,6 @@ output "instance_ids" {
 output "public_ips" {
   description = "IPs públiques de les instàncies"
   value       = aws_instance.web[*].public_ip
-}
-
-output "urls" {
-  description = "URL HTTP de cada instància"
-  value       = [for ip in aws_instance.web[*].public_ip : "http://${ip}"]
-}
-
-output "ssh_commands" {
-  description = "Ordres per connectar-se per SSH a cada instància"
-  value = [
-    for ip in aws_instance.web[*].public_ip :
-    "ssh -i ~/.ssh/vockey.pem ec2-user@${ip}"
-  ]
 }
 
 output "ami_id" {
