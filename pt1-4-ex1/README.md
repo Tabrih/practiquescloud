@@ -257,11 +257,9 @@ httpd: active
 
 ### 7.5 Captures
 
-| Recurs | Captura |
-|---|---|
-| Topologia de xarxa | [`assets/topologia.png`](assets/topologia.png) |
-| Consola EC2 amb les 2 instàncies | *(pendent: captura de pantalla de la consola)* |
-| Pàgina web servida per les instàncies | *(pendent: captura del navegador)* |
+Topologia de Xarxa
+
+![Topologia de Xarxa](assets/topologia.png)
 
 ## 8. Problemes habituals
 
