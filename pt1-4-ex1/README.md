@@ -255,12 +255,6 @@ VERSION="2023"
 httpd: active
 ```
 
-### 7.5 Captures
-
-Topologia de Xarxa
-
-![Topologia de Xarxa](assets/topologia.png)
-
 ## 8. Problemes habituals
 
 | Símptoma | Causa i solució |
