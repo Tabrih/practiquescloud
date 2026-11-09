@@ -71,20 +71,26 @@ ping -c 3 10.0.2.x
 ```
 
 ## Captures
-VPC:
+**VPC:**
+
 ![VPC](assets/vpc.png)
 
-Subxarxes:
+**Subxarxes:**
+
 ![Subxarxes](assets/subnets.png)
 
-Taules d'enrutament:
+**Taules d'enrutament:**
+
 ![Route Tables](assets/route_tables.png)
 
-Security Group:
-![Security Grup Entrada](assets/security_group_entrada.png)
-![Security Grup Sortida](assets/security_group_sortida.png)
+**Security Group:**
 
-Instàncies:
+![Security Grup Entrada](assets/security_group_entrada.png)
+
+![Security Grup Sortida](assets/security_group_salida.png)
+
+**Instàncies:**
+
 ![EC2 Instances](assets/ec2_instances.png)
 
 
