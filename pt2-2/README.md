@@ -23,9 +23,12 @@ reben IP pública en el moment del desplegament.
 
 ```
 pt2-2/
-├── assets/     imatges de la pràctica
+├── assets/        imatges de la pràctica
 ├── README.md
-└── main.tf
+├── providers.tf   versió de Terraform, proveïdor d'AWS i AMI
+├── main.tf        VPC, subxarxes, Internet Gateway i taula de rutes
+├── security.tf    grup de seguretat
+└── ec2.tf         les dues instàncies
 ```
 
 ## Requisits
