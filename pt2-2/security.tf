@@ -1,7 +1,3 @@
-###############################################################################
-# Grup de seguretat
-###############################################################################
-
 resource "aws_security_group" "main" {
   name        = "VPC-03-sg"
   description = "SSH des de qualsevol lloc, ICMP des de la VPC i sortida total"
