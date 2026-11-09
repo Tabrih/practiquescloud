@@ -70,8 +70,6 @@ fer `ping` a la IP privada de `ec2-b`:
 ping -c 3 10.0.2.x
 ```
 
-## Destrucció
+## Captures
 
-```bash
-terraform destroy
-```
+![VPC](../assets/vpc.png)
