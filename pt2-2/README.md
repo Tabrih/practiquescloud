@@ -79,7 +79,7 @@ ping -c 3 10.0.2.x
 
 ![Subxarxes](assets/subnets.png)
 
-**Taules d'enrutament:**
+**Taula d'enrutament:**
 
 ![Route Tables](assets/route_tables.png)
 
